@@ -13,9 +13,27 @@ function Collideable:initialize(width, height)
     self:worldAdd()
 end
 
+function Collideable:collisionEvent(side)
+end
+
 function Collideable:moveTo(x, y)
     local newX, newY, cols, len = collision.world:move(self, x, y)
     self:setPosition(newX, newY)
+
+    for k, v in pairs(cols) do
+        if v.move.x > 0 then
+            self:collisionEvent('right')
+        end
+        if v.move.x < 0 then
+            self:collisionEvent('left')
+        end
+        if v.move.y > 0 then
+            self:collisionEvent('bottom')
+        end
+        if v.move.y < 0 then
+            self:collisionEvent('top')
+        end
+    end
 end
 
 function Collideable:move(x, y)
