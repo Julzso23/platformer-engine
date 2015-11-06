@@ -8,6 +8,7 @@ function Player:initialize()
     Collideable.initialize(self, 64, 64)
 
     self.velocity = {}
+    self.velocity.x = 200
     self.velocity.y = 0
 
     self.grounded = false
@@ -31,6 +32,10 @@ function Player:collisionEvent(side)
             self.grounded = true
         end
     end
+end
+
+function Player:moveDir(direction, dt)
+    self:move(direction * self.velocity.x * dt, 0)
 end
 
 function Player:jump()
