@@ -1,11 +1,11 @@
 local class = include('middleclass')
 
-local Transformable = include('shared.Transformable')
+local Collideable = include('shared.Collideable')
 
-local Tile = class('Tile', Transformable)
+local Tile = class('Tile', Collideable)
 
 function Tile:initialize()
-    Transformable.initialize(self)
+    Collideable.initialize(self, 64, 64)
 end
 
 return Tile
