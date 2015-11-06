@@ -1,0 +1,1 @@
+require('platformer.shared.helper')

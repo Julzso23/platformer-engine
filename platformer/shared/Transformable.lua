@@ -1,4 +1,4 @@
-local class = require('libraries.middleclass')
+local class = include('middleclass')
 
 local Transformable = class('Transformable')
 
