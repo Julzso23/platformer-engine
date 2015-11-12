@@ -5,13 +5,13 @@ function love.conf(t)
 
     t.window.title = "Platformer engine"
     t.window.icon = nil
-    t.window.width = 1280
-    t.window.height = 720
+    t.window.width = 0
+    t.window.height = 0
     t.window.borderless = false
     t.window.resizable = false
     t.window.minwidth = 1
     t.window.minheight = 1
-    t.window.fullscreen = false
+    t.window.fullscreen = true
     t.window.fullscreentype = "desktop"
     t.window.vsync = true
     t.window.fsaa = 0
