@@ -5,7 +5,7 @@ local includeLocations = {
 
 function include(resource)
     for k, v in pairs(includeLocations) do
-        if love.filesystem.exists(v .. '/' .. resource:gsub('%.', '/') .. '.lua') then
+        if love.filesystem.exists(v .. '/' .. resource:gsub('%.', '/') .. '.lua') or love.filesystem.isDirectory(v .. '/' .. resource:gsub('%.', '/')) then
             return require(v:gsub('/', '.') .. '.' .. resource)
         end
     end
