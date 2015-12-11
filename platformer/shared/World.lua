@@ -41,6 +41,8 @@ function World:save(path)
 end
 
 function World:load(path)
+    self.tiles = {}
+
     local data = msgpack.unpack(love.filesystem.read('maps/' .. path))
     for k, v in pairs(data) do
         self:addTile(v.x, v.y, v.w, v.h)
