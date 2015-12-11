@@ -11,3 +11,12 @@ function include(resource)
     end
     error('Attempt to include non-indexed resource.')
 end
+
+function table.contains(table, value)
+    for k, v in pairs(table) do
+        if v == value then
+            return true
+        end
+    end
+    return false
+end
