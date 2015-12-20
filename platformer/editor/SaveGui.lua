@@ -3,29 +3,29 @@ local class = include('middleclass')
 local SaveGui = class('SaveGui')
 
 function SaveGui:initialize()
-    self.isClosed = false
+    self.isClosed = true
 
-    local saveButton = loveframes.Create('button')
-    saveButton:SetText('Save')
-    saveButton.parentClass = self
-    saveButton.OnClick = function(self)
+    local button = loveframes.Create('button')
+    button:SetText('Save')
+    button.parentClass = self
+    button.OnClick = function(self)
         self.parentClass:open()
     end
 
-    local saveButtonTooltip = loveframes.Create('tooltip')
-    saveButtonTooltip:SetObject(saveButton)
-    saveButtonTooltip:SetText('ctrl+s')
-    saveButtonTooltip:SetFollowCursor(false)
-    saveButtonTooltip:SetFollowObject(true)
-    saveButtonTooltip:SetOffsets(saveButton:GetWidth() / 4, saveButton:GetHeight())
+    local tooltip = loveframes.Create('tooltip')
+    tooltip:SetObject(button)
+    tooltip:SetText('ctrl+s')
+    tooltip:SetFollowCursor(false)
+    tooltip:SetFollowObject(true)
+    tooltip:SetOffsets(button:GetWidth() / 4, button:GetHeight())
 end
 
 function SaveGui:isOpen()
-    return self.isClosed
+    return not self.isClosed
 end
 
 function SaveGui:open()
-    self.isClosed = true
+    self.isClosed = false
 
     local frame = loveframes.Create('frame')
     frame:SetName('Save map')
@@ -34,7 +34,7 @@ function SaveGui:open()
     frame:CenterWithinArea(0, 0, love.window.getWidth(), love.window.getHeight())
     frame.parentClass = self
     frame.OnClose = function(self)
-        self.parentClass.isClosed = false
+        self.parentClass.isClosed = true
     end
 
     local textBox = loveframes.Create('textinput', frame)
@@ -44,7 +44,7 @@ function SaveGui:open()
     textBox.parentClass = self
     textBox.OnEnter = function(self, text)
         world:save(text)
-        self.parentClass.isClosed = true
+        self:GetParent():Remove()
     end
 end
 
