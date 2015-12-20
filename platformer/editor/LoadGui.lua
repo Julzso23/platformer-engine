@@ -47,6 +47,7 @@ function LoadGui:open()
         world:load(text)
         self:GetParent():Remove()
     end
+    textBox:SetFocus(true)
 end
 
 return LoadGui

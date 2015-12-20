@@ -46,6 +46,7 @@ function SaveGui:open()
         world:save(text)
         self:GetParent():Remove()
     end
+    textBox:SetFocus(true)
 end
 
 return SaveGui
