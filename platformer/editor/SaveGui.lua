@@ -44,6 +44,7 @@ function SaveGui:open()
     textBox.parentClass = self
     textBox.OnEnter = function(self, text)
         world:save(text)
+        self:GetParent():OnClose()
         self:GetParent():Remove()
     end
     textBox:SetFocus(true)

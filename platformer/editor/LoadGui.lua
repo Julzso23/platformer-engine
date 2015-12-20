@@ -45,6 +45,7 @@ function LoadGui:open()
     textBox.parentClass = self
     textBox.OnEnter = function(self, text)
         world:load(text)
+        self:GetParent():OnClose()
         self:GetParent():Remove()
     end
     textBox:SetFocus(true)
