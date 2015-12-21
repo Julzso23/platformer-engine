@@ -1,6 +1,10 @@
 function love.load(args)
     love.window.setTitle('Platformer engine - editor')
 
+    resources = include('shared.resources')
+
+    addResource('images', 'grassMid.png', 'grass')
+
     local World = include('shared.World')
     world = World:new()
 
@@ -8,7 +12,7 @@ function love.load(args)
     brush = Brush:new()
     brush.onStop = function(self, rectangle)
         if rectangle.w ~= 0 and rectangle.h ~= 0 then
-            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h)
+            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, 'grass')
         end
     end
 
@@ -63,10 +67,7 @@ function love.draw()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.rectangle('line', brush:getRectangle().x * config.tileSize, brush:getRectangle().y * config.tileSize, brush:getRectangle().w * config.tileSize, brush:getRectangle().h * config.tileSize)
 
-    for k, v in pairs(world.tiles) do
-        love.graphics.setColor(255, 0, 0, 255)
-        love.graphics.rectangle('fill', v.position.x, v.position.y, v.width, v.height)
-    end
+    world:draw()
 
     love.graphics.setColor(255, 255, 255, 128)
     love.graphics.line(0, -10, 0, 10)
