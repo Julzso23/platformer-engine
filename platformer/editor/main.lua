@@ -61,6 +61,10 @@ function love.draw()
     love.graphics.push()
     love.graphics.translate(editorPosition.x, editorPosition.y)
 
+    love.graphics.setColor(255, 255, 255, 128)
+    love.graphics.line(0, -10, 0, 10)
+    love.graphics.line(-10, 0, 10, 0)
+
     for k, v in pairs(world.tiles) do
         love.graphics.setColor(255, 0, 0, 255)
         love.graphics.rectangle('fill', v.position.x, v.position.y, v.width, v.height)
