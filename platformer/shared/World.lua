@@ -10,8 +10,8 @@ function World:initialize()
     self.tiles = {}
 end
 
-function World:addTile(x, y, w, h)
-    table.insert(self.tiles, Tile:new(x, y, w, h))
+function World:addTile(x, y, w, h, texture)
+    table.insert(self.tiles, Tile:new(x, y, w, h, texture))
 end
 
 function World:removeTile(x, y)
@@ -50,6 +50,12 @@ function World:load(path)
         for k, v in pairs(data) do
             self:addTile(v.x, v.y, v.w, v.h)
         end
+    end
+end
+
+function World:draw()
+    for k, v in pairs(self.tiles) do
+        v:draw()
     end
 end
 
