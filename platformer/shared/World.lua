@@ -30,7 +30,8 @@ function World:save(path)
             x = (pos.x - pos.x % config.tileSize) / config.tileSize,
             y = (pos.y - pos.y % config.tileSize) / config.tileSize,
             w = v.width / config.tileSize,
-            h = v.height / config.tileSize
+            h = v.height / config.tileSize,
+            texture = v.texture
         })
     end
     data = msgpack.pack(data)
@@ -48,7 +49,7 @@ function World:load(path)
 
         local data = msgpack.unpack(love.filesystem.read(path))
         for k, v in pairs(data) do
-            self:addTile(v.x, v.y, v.w, v.h)
+            self:addTile(v.x, v.y, v.w, v.h, v.texture)
         end
     end
 end
