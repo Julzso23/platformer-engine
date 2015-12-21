@@ -40,35 +40,37 @@ end
 function love.update(dt)
     loveframes.update(dt)
 
-    if love.keyboard.isDown('a') then
-        editorPosition.x = editorPosition.x + 200 * dt
-    end
-    if love.keyboard.isDown('d') then
-        editorPosition.x = editorPosition.x - 200 * dt
-    end
-    if love.keyboard.isDown('w') then
-        editorPosition.y = editorPosition.y + 200 * dt
-    end
-    if love.keyboard.isDown('s') then
-        editorPosition.y = editorPosition.y - 200 * dt
+    if not saveGui:isOpen() and not loadGui:isOpen() then
+        if love.keyboard.isDown('a') then
+            editorPosition.x = editorPosition.x + 200 * dt
+        end
+        if love.keyboard.isDown('d') then
+            editorPosition.x = editorPosition.x - 200 * dt
+        end
+        if love.keyboard.isDown('w') then
+            editorPosition.y = editorPosition.y + 200 * dt
+        end
+        if love.keyboard.isDown('s') then
+            editorPosition.y = editorPosition.y - 200 * dt
+        end
     end
 end
 
 function love.draw()
-    love.graphics.setColor(255, 255, 255, 255)
-    love.graphics.rectangle('line', brush:getRectangle().x * config.tileSize, brush:getRectangle().y * config.tileSize, brush:getRectangle().w * config.tileSize, brush:getRectangle().h * config.tileSize)
-
     love.graphics.push()
     love.graphics.translate(editorPosition.x, editorPosition.y)
 
-    love.graphics.setColor(255, 255, 255, 128)
-    love.graphics.line(0, -10, 0, 10)
-    love.graphics.line(-10, 0, 10, 0)
+    love.graphics.setColor(255, 255, 255, 255)
+    love.graphics.rectangle('line', brush:getRectangle().x * config.tileSize, brush:getRectangle().y * config.tileSize, brush:getRectangle().w * config.tileSize, brush:getRectangle().h * config.tileSize)
 
     for k, v in pairs(world.tiles) do
         love.graphics.setColor(255, 0, 0, 255)
         love.graphics.rectangle('fill', v.position.x, v.position.y, v.width, v.height)
     end
+
+    love.graphics.setColor(255, 255, 255, 128)
+    love.graphics.line(0, -10, 0, 10)
+    love.graphics.line(-10, 0, 10, 0)
 
     love.graphics.pop()
 
@@ -81,8 +83,10 @@ end
 function love.mousepressed(x, y, button)
     if button == 'l' and y > 26 and not saveGui:isOpen() and not loadGui:isOpen() then
         brush:start()
-        local x = (x - x % config.tileSize) / config.tileSize
-        local y = (y - y % config.tileSize) / config.tileSize
+        local x = x - editorPosition.x
+        x = (x - x % config.tileSize) / config.tileSize
+        local y = y - editorPosition.y
+        y = (y - y % config.tileSize) / config.tileSize
         brush:setPosition(1, x, y)
         brush:setPosition(2, x, y)
     end
@@ -97,7 +101,7 @@ function love.mousereleased(x, y, button)
         end
 
         if button == 'r' then
-            world:removeTile(x, y)
+            world:removeTile(x - editorPosition.x, y - editorPosition.y)
         end
     end
 
@@ -106,8 +110,10 @@ end
 
 function love.mousemoved(x, y, dx, dy)
     if love.mouse.isDown('l') then
-        local x = (x - x % config.tileSize) / config.tileSize
-        local y = (y - y % config.tileSize) / config.tileSize
+        local x = x - editorPosition.x
+        x = (x - x % config.tileSize) / config.tileSize
+        local y = y - editorPosition.y
+        y = (y - y % config.tileSize) / config.tileSize
         brush:setPosition(2, x, y)
     end
 end
