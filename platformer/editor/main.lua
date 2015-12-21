@@ -12,6 +12,11 @@ function love.load(args)
         end
     end
 
+    editorPosition = {
+        x = 0,
+        y = 0
+    }
+
     local KeyCommand = include('shared.KeyCommand')
     keyCommands = {}
 
@@ -34,16 +39,34 @@ end
 
 function love.update(dt)
     loveframes.update(dt)
+
+    if love.keyboard.isDown('a') then
+        editorPosition.x = editorPosition.x + 200 * dt
+    end
+    if love.keyboard.isDown('d') then
+        editorPosition.x = editorPosition.x - 200 * dt
+    end
+    if love.keyboard.isDown('w') then
+        editorPosition.y = editorPosition.y + 200 * dt
+    end
+    if love.keyboard.isDown('s') then
+        editorPosition.y = editorPosition.y - 200 * dt
+    end
 end
 
 function love.draw()
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.rectangle('line', brush:getRectangle().x * config.tileSize, brush:getRectangle().y * config.tileSize, brush:getRectangle().w * config.tileSize, brush:getRectangle().h * config.tileSize)
 
+    love.graphics.push()
+    love.graphics.translate(editorPosition.x, editorPosition.y)
+
     for k, v in pairs(world.tiles) do
         love.graphics.setColor(255, 0, 0, 255)
         love.graphics.rectangle('fill', v.position.x, v.position.y, v.width, v.height)
     end
+
+    love.graphics.pop()
 
     love.graphics.setColor(50, 50, 50, 200)
     love.graphics.rectangle('fill', 0, 0, love.window.getWidth(), 26)
