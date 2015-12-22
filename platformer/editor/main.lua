@@ -11,9 +11,10 @@ function love.load(args)
     brush = Brush:new()
     brush.onStop = function(self, rectangle)
         if rectangle.w ~= 0 and rectangle.h ~= 0 then
-            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, textures.grass)
+            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, textures[rectangle.texture])
         end
     end
+    brush:setTexture('grass')
 
     editorPosition = {
         x = 0,
@@ -119,6 +120,22 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 function love.keypressed(key, isRepeat)
+    if key == '1' then
+        brush:setTexture('grass')
+    end
+    if key == '2' then
+        brush:setTexture('dirt')
+    end
+    if key == '3' then
+        brush:setTexture('sand')
+    end
+    if key == '4' then
+        brush:setTexture('snow')
+    end
+    if key == '5' then
+        brush:setTexture('stone')
+    end
+
     loveframes.keypressed(key, isRepeat)
 
     for k, v in pairs(keyCommands) do
