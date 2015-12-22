@@ -2,9 +2,9 @@ local class = include('middleclass')
 
 local TileTexture = class('TileTexture')
 
-function TileTexture:initialize()
+function TileTexture:initialize(name)
+    self.name = name
     self.imagePaths = {}
-
     self.images = {}
 end
 
