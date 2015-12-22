@@ -4,6 +4,8 @@ local msgpack = include('MessagePack')
 
 local Tile = include('shared.Tile')
 
+local textures = include('shared.textures')
+
 local World = class('World')
 
 function World:initialize()
@@ -31,7 +33,7 @@ function World:save(path)
             y = (pos.y - pos.y % config.tileSize) / config.tileSize,
             w = v.width / config.tileSize,
             h = v.height / config.tileSize,
-            texture = v.texture
+            texture = v.texture.name
         })
     end
     data = msgpack.pack(data)
@@ -49,7 +51,7 @@ function World:load(path)
 
         local data = msgpack.unpack(love.filesystem.read(path))
         for k, v in pairs(data) do
-            self:addTile(v.x, v.y, v.w, v.h, v.texture)
+            self:addTile(v.x, v.y, v.w, v.h, textures[v.texture])
         end
     end
 end
