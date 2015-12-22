@@ -10,8 +10,8 @@ function World:initialize()
     self.tiles = {}
 end
 
-function World:addTile(x, y, w, h, surfaceTexture, bodyTexture)
-    table.insert(self.tiles, Tile:new(x, y, w, h, surfaceTexture, bodyTexture))
+function World:addTile(x, y, w, h, texture)
+    table.insert(self.tiles, Tile:new(x, y, w, h, texture))
 end
 
 function World:removeTile(x, y)

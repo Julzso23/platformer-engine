@@ -1,9 +1,8 @@
 function love.load(args)
     love.window.setTitle('Platformer engine - editor')
 
-    resources = include('shared.resources')
-
-    include('editor.textures')
+    local textures = include('shared.textures')
+    textures.loadAll()
 
     local World = include('shared.World')
     world = World:new()
@@ -12,7 +11,7 @@ function love.load(args)
     brush = Brush:new()
     brush.onStop = function(self, rectangle)
         if rectangle.w ~= 0 and rectangle.h ~= 0 then
-            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, 'grass', 'dirt')
+            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, textures.grass)
         end
     end
 
