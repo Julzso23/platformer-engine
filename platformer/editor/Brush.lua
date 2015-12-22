@@ -8,6 +8,8 @@ function Brush:initialize()
     self:reset()
 
     self.drawing = false
+
+    self.texture = ''
 end
 
 function Brush:reset()
@@ -57,6 +59,8 @@ function Brush:createRectangle()
         self.output.y = self.positions[2].y
         self.output.h = self.positions[1].y - self.positions[2].y + 1
     end
+
+    self.output.texture = self.texture
 end
 
 function Brush:getRectangle()
@@ -78,6 +82,10 @@ function Brush:stop()
 end
 
 function Brush:onStop(rectangle)
+end
+
+function Brush:setTexture(texture)
+    self.texture = texture
 end
 
 return Brush
