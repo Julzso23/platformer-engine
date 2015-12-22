@@ -3,7 +3,7 @@ function love.load(args)
 
     resources = include('shared.resources')
 
-    addResource('images', 'grassMid.png', 'grass')
+    include('editor.textures')
 
     local World = include('shared.World')
     world = World:new()
@@ -12,7 +12,7 @@ function love.load(args)
     brush = Brush:new()
     brush.onStop = function(self, rectangle)
         if rectangle.w ~= 0 and rectangle.h ~= 0 then
-            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, 'grass')
+            world:addTile(rectangle.x, rectangle.y, rectangle.w, rectangle.h, 'grass', 'dirt')
         end
     end
 
