@@ -38,17 +38,33 @@ function LoadGui:open()
         self.parentClass.isClosed = true
     end
 
-    local textBox = loveframes.Create('textinput', frame)
-    textBox:SetPos(0, 30)
-    textBox:SetWidth(frame:GetWidth())
-    textBox:SetPlaceholderText('Map name')
-    textBox.parentClass = self
-    textBox.OnEnter = function(self, text)
-        world:load(text)
+    local list = loveframes.Create('columnlist', frame)
+    list:SetPos(0, 30)
+    list:SetSize(list:GetParent():GetWidth(), list:GetParent():GetHeight() - 30)
+    list:AddColumn('Map name')
+    list.OnRowClicked = function(self, row, rowData)
+        world:load(rowData[1])
         self:GetParent():OnClose()
         self:GetParent():Remove()
     end
-    textBox:SetFocus(true)
+    list.OnRowRightClicked = function(self, row, rowData)
+        local contextMenu = loveframes.Create('menu', row)
+        contextMenu:AddOption('Load', false, function()
+            world:load(rowData[1])
+            self:GetParent():OnClose()
+            self:GetParent():Remove()
+        end)
+        contextMenu:AddOption('Delete', false, function()
+            love.filesystem.remove('maps/' .. rowData[1])
+            self:GetParent().parentClass:open()
+            self:GetParent():Remove()
+        end)
+        contextMenu:SetPos(love.mouse.getX(), love.mouse.getY())
+    end
+
+    for k, v in pairs(love.filesystem.getDirectoryItems('maps')) do
+        list:AddRow(v)
+    end
 end
 
 return LoadGui
