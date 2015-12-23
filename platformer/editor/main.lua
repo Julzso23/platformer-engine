@@ -39,6 +39,21 @@ function love.load(args)
     keyCommands.loadCommand = KeyCommand:new({'lctrl', 'o'}, function()
         loadGui:open()
     end)
+
+    local minimiseButton = loveframes.Create('button')
+    minimiseButton:SetText('-')
+    minimiseButton:SetWidth(minimiseButton:GetHeight())
+    minimiseButton:SetPos(love.window.getWidth() - minimiseButton:GetWidth() * 2, 0)
+    minimiseButton.OnClick = function(self, link)
+        love.window.minimize()
+    end
+    local closeButton = loveframes.Create('button')
+    closeButton:SetText('X')
+    closeButton:SetWidth(closeButton:GetHeight())
+    closeButton:SetPos(love.window.getWidth() - closeButton:GetWidth(), 0)
+    closeButton.OnClick = function(self, link)
+        love.event.quit()
+    end
 end
 
 function love.update(dt)
