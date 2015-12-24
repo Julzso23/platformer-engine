@@ -83,16 +83,16 @@ function love.update(dt)
     loveframes.update(dt)
 
     if not guis.anyOpen() then
-        if love.keyboard.isDown('a') then
+        if love.keyboard.isDown('left') then
             editorPosition.x = editorPosition.x + 200 * dt
         end
-        if love.keyboard.isDown('d') then
+        if love.keyboard.isDown('right') then
             editorPosition.x = editorPosition.x - 200 * dt
         end
-        if love.keyboard.isDown('w') then
+        if love.keyboard.isDown('up') then
             editorPosition.y = editorPosition.y + 200 * dt
         end
-        if love.keyboard.isDown('s') then
+        if love.keyboard.isDown('down') then
             editorPosition.y = editorPosition.y - 200 * dt
         end
     end
