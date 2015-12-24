@@ -9,7 +9,9 @@ function SaveGui:initialize()
     button:SetText('Save')
     button.parentClass = self
     button.OnClick = function(self)
-        self.parentClass:open()
+        if not guis.anyOpen() then
+            self.parentClass:open()
+        end
     end
 
     local tooltip = loveframes.Create('tooltip')

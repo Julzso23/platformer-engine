@@ -40,21 +40,27 @@ function love.load(args)
     guis.save = include('editor.SaveGui'):new()
 
     keyCommands.saveCommand = KeyCommand:new({'lctrl', 's'}, function()
-        guis.save:open()
+        if not guis.anyOpen() then
+            guis.save:open()
+        end
     end)
 
     -- Load
     guis.load = include('editor.LoadGui'):new()
 
     keyCommands.loadCommand = KeyCommand:new({'lctrl', 'o'}, function()
-        guis.load:open()
+        if not guis.anyOpen() then
+            guis.load:open()
+        end
     end)
 
     -- Select tile
     guis.selectTile = include('editor.SelectTileGui'):new()
 
     keyCommands.selectTileCommand = KeyCommand:new({'tab'}, function()
-        guis.selectTile:open()
+        if not guis.anyOpen() then
+            guis.selectTile:open()
+        end
     end)
 
     local minimiseButton = loveframes.Create('button')
@@ -152,22 +158,6 @@ function love.mousemoved(x, y, dx, dy)
 end
 
 function love.keypressed(key, isRepeat)
-    if key == '1' then
-        brush:setTexture('grass')
-    end
-    if key == '2' then
-        brush:setTexture('dirt')
-    end
-    if key == '3' then
-        brush:setTexture('sand')
-    end
-    if key == '4' then
-        brush:setTexture('snow')
-    end
-    if key == '5' then
-        brush:setTexture('stone')
-    end
-
     loveframes.keypressed(key, isRepeat)
 
     for k, v in pairs(keyCommands) do
