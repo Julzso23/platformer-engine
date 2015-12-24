@@ -26,18 +26,35 @@ function love.load(args)
 
     require('libraries.loveframes')
 
+    guis = {}
+    guis.anyOpen = function()
+        for k, v in pairs(guis) do
+            if type(v) == 'table' and v:isOpen() then
+                return true
+            end
+        end
+        return false
+    end
+
     -- Save
-    saveGui = include('editor.SaveGui'):new()
+    guis.save = include('editor.SaveGui'):new()
 
     keyCommands.saveCommand = KeyCommand:new({'lctrl', 's'}, function()
-        saveGui:open()
+        guis.save:open()
     end)
 
     -- Load
-    loadGui = include('editor.LoadGui'):new()
+    guis.load = include('editor.LoadGui'):new()
 
     keyCommands.loadCommand = KeyCommand:new({'lctrl', 'o'}, function()
-        loadGui:open()
+        guis.load:open()
+    end)
+
+    -- Select tile
+    guis.selectTile = include('editor.SelectTileGui'):new()
+
+    keyCommands.selectTileCommand = KeyCommand:new({'tab'}, function()
+        guis.selectTile:open()
     end)
 
     local minimiseButton = loveframes.Create('button')
@@ -59,7 +76,7 @@ end
 function love.update(dt)
     loveframes.update(dt)
 
-    if not saveGui:isOpen() and not loadGui:isOpen() then
+    if not guis.anyOpen() then
         if love.keyboard.isDown('a') then
             editorPosition.x = editorPosition.x + 200 * dt
         end
@@ -97,7 +114,7 @@ function love.draw()
 end
 
 function love.mousepressed(x, y, button)
-    if button == 'l' and y > 26 and not saveGui:isOpen() and not loadGui:isOpen() then
+    if button == 'l' and y > 26 and not guis.anyOpen() then
         brush:start()
         local x = x - editorPosition.x
         x = (x - x % config.tileSize) / config.tileSize
@@ -111,7 +128,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-    if y > 26 and not saveGui:isOpen() and not loadGui:isOpen() then
+    if y > 26 and not guis.anyOpen() then
         if button == 'l' then
             brush:stop()
         end
