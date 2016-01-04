@@ -36,7 +36,7 @@ function SelectTileGui:open()
     frame:SetName('Select tile')
     frame:SetDraggable(false)
     frame:SetSize(388, 512)
-    frame:CenterWithinArea(0, 0, love.window.getWidth(), love.window.getHeight())
+    frame:CenterWithinArea(0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     frame.parentClass = self
     frame.OnClose = function(self)
         self.parentClass.isClosed = true

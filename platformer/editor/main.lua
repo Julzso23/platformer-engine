@@ -1,4 +1,6 @@
 function love.load(args)
+    mouseButtons = {'l', 'r', 'm'}
+
     love.window.setTitle('Platformer engine - editor')
 
     local textures = include('shared.textures')
@@ -66,14 +68,14 @@ function love.load(args)
     local minimiseButton = loveframes.Create('button')
     minimiseButton:SetText('-')
     minimiseButton:SetWidth(minimiseButton:GetHeight())
-    minimiseButton:SetPos(love.window.getWidth() - minimiseButton:GetWidth() * 2, 0)
+    minimiseButton:SetPos(love.graphics.getWidth() - minimiseButton:GetWidth() * 2, 0)
     minimiseButton.OnClick = function(self, link)
         love.window.minimize()
     end
     local closeButton = loveframes.Create('button')
     closeButton:SetText('X')
     closeButton:SetWidth(closeButton:GetHeight())
-    closeButton:SetPos(love.window.getWidth() - closeButton:GetWidth(), 0)
+    closeButton:SetPos(love.graphics.getWidth() - closeButton:GetWidth(), 0)
     closeButton.OnClick = function(self, link)
         love.event.quit()
     end
@@ -114,12 +116,13 @@ function love.draw()
     love.graphics.pop()
 
     love.graphics.setColor(50, 50, 50, 200)
-    love.graphics.rectangle('fill', 0, 0, love.window.getWidth(), 26)
+    love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), 26)
 
     loveframes.draw()
 end
 
 function love.mousepressed(x, y, button)
+    button = mouseButtons[button]
     if button == 'l' and y > 26 and not guis.anyOpen() then
         brush:start()
         local x = x - editorPosition.x
@@ -134,6 +137,7 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
+    button = mouseButtons[button]
     if y > 26 and not guis.anyOpen() then
         if button == 'l' then
             brush:stop()
@@ -148,7 +152,7 @@ function love.mousereleased(x, y, button)
 end
 
 function love.mousemoved(x, y, dx, dy)
-    if love.mouse.isDown('l') then
+    if love.mouse.isDown(1) then
         local x = x - editorPosition.x
         x = (x - x % config.tileSize) / config.tileSize
         local y = y - editorPosition.y
