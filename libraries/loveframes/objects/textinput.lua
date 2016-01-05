@@ -11,7 +11,7 @@ local newobject = loveframes.NewObject("textinput", "loveframes_object_textinput
 	- desc: initializes the object
 --]]---------------------------------------------------------
 function newobject:initialize()
-	
+
 	self.type = "textinput"
 	self.keydown = "none"
 	self.tabreplacement = "        "
@@ -68,7 +68,7 @@ function newobject:initialize()
 	self.OnFocusLost = nil
 	self.OnCopy = nil
 	self.OnPaste = nil
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -79,23 +79,23 @@ function newobject:update(dt)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	local alwaysupdate = self.alwaysupdate
-	
+
 	if not visible then
 		if not alwaysupdate then
 			return
 		end
 	end
-	
+
 	-- check to see if the object is being hovered over
 	self:CheckHover()
-	
+
 	local time = love.timer.getTime()
 	local keydown = self.keydown
 	local parent = self.parent
@@ -115,7 +115,7 @@ function newobject:update(dt)
 	local internals = self.internals
 	local repeatrate = self.repeatrate
 	local hover = self.hover
-	
+
 	-- move to parent if there is a parent
 	if parent ~= base then
 		local parentx = parent.x
@@ -125,15 +125,15 @@ function newobject:update(dt)
 		self.x = parentx + staticx
 		self.y = parenty + staticy
 	end
-	
+
 	if inputobject ~= self then
 		self.focus = false
 		self.alltextselected = false
 	end
-	
+
 	self:PositionText()
 	self:UpdateIndicator()
-	
+
 	-- calculations for multiline mode
 	if multiline then
 		local twidth = 0
@@ -203,7 +203,7 @@ function newobject:update(dt)
 				end
 			end
 		end
-		
+
 		if itemwidth > width then
 			if not hbar then
 				local scrollbody = loveframes.objects["scrollbody"]:new(self, "horizontal")
@@ -243,15 +243,15 @@ function newobject:update(dt)
 			end
 		end
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:update(dt)
 	end
-	
+
 	if update then
 		update(self, dt)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -262,16 +262,16 @@ function newobject:draw()
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	if not visible then
 		return
 	end
-	
+
 	local x = self.x
 	local y = self.y
 	local width = self.width
@@ -289,28 +289,29 @@ function newobject:draw()
 	local internals = self.internals
 	local vbar = self.vbar
 	local hbar = self.hbar
-	
+
 	-- set the object's draw order
 	self:SetDrawOrder()
-	
+
 	if vbar and hbar then
 		stencilfunc = function() love.graphics.rectangle("fill", x, y, width - 16, height - 16) end
 	end
-	
-	love.graphics.setStencil(stencilfunc)
-	
+
+	love.graphics.stencil(stencilfunc, "replace", 1)
+	love.graphics.setStencilTest("greater", 0)
+
 	if draw then
 		draw(self)
 	else
 		drawfunc(self)
 	end
-	
-	love.graphics.setStencil()
-	
+
+	love.graphics.setStencilTest()
+
 	for k, v in ipairs(internals) do
 		v:draw()
 	end
-	
+
 	if not draw then
 		drawoverfunc(self)
 	end
@@ -325,16 +326,16 @@ function newobject:mousepressed(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	if not visible then
 		return
 	end
-	
+
 	local hover = self.hover
 	local internals = self.internals
 	local vbar = self.vbar
@@ -346,7 +347,7 @@ function newobject:mousepressed(x, y, button)
 	local onfocuslost = self.OnFocusLost
 	local time = love.timer.getTime()
 	local inputobject = loveframes.inputobject
-	
+
 	if hover then
 		if button == "l" then
 			if inputobject ~= self then
@@ -407,11 +408,11 @@ function newobject:mousepressed(x, y, button)
 			end
 		end
 	end
-	
+
 	for k, v in ipairs(internals) do
 		v:mousepressed(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -422,21 +423,21 @@ function newobject:mousereleased(x, y, button)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	if not visible then
 		return
 	end
-	
+
 	local internals = self.internals
 	for k, v in ipairs(internals) do
 		v:mousereleased(x, y, button)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -447,26 +448,26 @@ function newobject:keypressed(key, isrepeat)
 
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
-	
+
 	if not visible then
 		return
 	end
-	
+
 	local time = love.timer.getTime()
 	local focus = self.focus
 	local repeatdelay = self.repeatdelay
 	local alltextselected = self.alltextselected
 	local editable = self.editable
-	
+
 	self.delay = time + repeatdelay
 	self.keydown = key
-	
+
 	if (loveframes.util.IsCtrlDown()) and focus then
 		if key == "a" then
 			if not self.multiline then
@@ -500,7 +501,7 @@ function newobject:keypressed(key, isrepeat)
 	else
 		self:RunKey(key, false)
 	end
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -508,21 +509,21 @@ end
 	- desc: called when the player releases a key
 --]]---------------------------------------------------------
 function newobject:keyreleased(key)
-	
+
 	local state = loveframes.state
 	local selfstate = self.state
-	
+
 	if state ~= selfstate then
 		return
 	end
-	
+
 	local visible = self.visible
 	if not visible then
 		return
 	end
-	
+
 	self.keydown = "none"
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -534,9 +535,9 @@ function newobject:textinput(text)
 	if text:find("kp.") then
 		text = text:gsub("kp", "")
 	end
-		
+
 	self:RunKey(text, true)
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -544,18 +545,18 @@ end
 	- desc: runs a key event on the object
 --]]---------------------------------------------------------
 function newobject:RunKey(key, istext)
-	
+
 	local visible = self.visible
 	local focus = self.focus
-	
+
 	if not visible then
 		return
 	end
-	
+
 	if not focus then
 		return
 	end
-	
+
 	local x = self.x
 	local offsetx = self.offsetx
 	local lines = self.lines
@@ -574,7 +575,7 @@ function newobject:RunKey(key, istext)
 	local initialtext = self:GetText()
 	local ontextchanged = self.OnTextChanged
 	local onenter = self.OnEnter
-	
+
 	if not istext then
 		if key == "left" then
 			indicatornum = self.indicatornum
@@ -652,11 +653,11 @@ function newobject:RunKey(key, istext)
 			end
 			return
 		end
-		
+
 		if not editable then
 			return
 		end
-		
+
 		-- key input checking system
 		if key == "backspace" then
 			ckey = key
@@ -735,7 +736,7 @@ function newobject:RunKey(key, istext)
 					indicatornum = self.indicatornum
 					line = self.line
 				end
-				local newtext = "" 
+				local newtext = ""
 				if indicatornum == 0 then
 					newtext = self.lines[line]
 					self.lines[line] = ""
@@ -835,14 +836,14 @@ function newobject:RunKey(key, istext)
 			end
 		end
 	end
-	
+
 	local curtext = self:GetText()
 	if ontextchanged and initialtext ~= curtext then
 		ontextchanged(self, key)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -856,29 +857,29 @@ function newobject:MoveIndicator(num, exact)
 	local curline = lines[line]
 	local text = curline
 	local indicatornum = self.indicatornum
-	
+
 	if not exact then
 		self.indicatornum = indicatornum + num
 	else
 		self.indicatornum = num
 	end
-	
+
 	if self.indicatornum > #text then
 		self.indicatornum = #text
 	elseif self.indicatornum < 0 then
 		self.indicatornum = 0
 	end
-	
+
 	self.showindicator = true
 	self:UpdateIndicator()
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: UpdateIndicator()
-	- desc: updates the object's text insertion position 
+	- desc: updates the object's text insertion position
 			indicator
 --]]---------------------------------------------------------
 function newobject:UpdateIndicator()
@@ -899,7 +900,7 @@ function newobject:UpdateIndicator()
 	local textx = self.textx
 	local texty = self.texty
 	local masked = self.masked
-	
+
 	if indincatortime < time then
 		if showindicator then
 			self.showindicator = false
@@ -908,13 +909,13 @@ function newobject:UpdateIndicator()
 		end
 		self.indincatortime = time + 0.50
 	end
-	
+
 	if alltextselected then
 		self.showindicator = false
 	end
-	
+
 	local width = 0
-	
+
 	for i=1, indicatornum do
 		if masked then
 			local char = self.maskchar
@@ -924,7 +925,7 @@ function newobject:UpdateIndicator()
 			width = width + font:getWidth(char)
 		end
 	end
-	
+
 	if multiline then
 		self.indicatorx = textx + width
 		self.indicatory	= texty + theight * line - theight
@@ -932,14 +933,14 @@ function newobject:UpdateIndicator()
 		self.indicatorx = textx + width
 		self.indicatory	= texty
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: AddIntoText(t, p)
-	- desc: adds text into the object's text at a given 
+	- desc: adds text into the object's text at a given
 			position
 --]]---------------------------------------------------------
 function newobject:AddIntoText(t, p)
@@ -951,14 +952,14 @@ function newobject:AddIntoText(t, p)
 	local part1 = text:sub(1, p)
 	local part2 = text:sub(p + 1)
 	local new = part1 .. t .. part2
-	
+
 	return new
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: RemoveFromText(p)
-	- desc: removes text from the object's text a given 
+	- desc: removes text from the object's text a given
 			position
 --]]---------------------------------------------------------
 function newobject:RemoveFromText(p)
@@ -971,7 +972,7 @@ function newobject:RemoveFromText(p)
 	local part2 = text:sub(p + 1)
 	local new = part1 .. part2
 	return new
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -995,7 +996,7 @@ function newobject:GetTextCollisions(x, y)
 	local selfy = self.y
 	local selfwidth = self.width
 	local masked = self.masked
-			
+
 	if multiline then
 		local theight = font:getHeight()
 		local liney = 0
@@ -1034,25 +1035,25 @@ function newobject:GetTextCollisions(x, y)
 				local tx = self.textx + xpos
 				local ty = self.texty
 				local col = loveframes.util.BoundingBox(tx, x, liney, y, width, 1, height, 1)
-				
+
 				xpos = xpos + width
-				
+
 				if col then
 					self:MoveIndicator(i - 1, true)
 					break
 				else
 					self.indicatornum = #curline
 				end
-				
+
 				if x < tx then
 					self:MoveIndicator(0, true)
 				end
-				
+
 				if x > (tx + width) then
 					self:MoveIndicator(#curline, true)
 				end
 			end
-			
+
 			if #curline == 0 then
 				self.indicatornum = 0
 			end
@@ -1084,9 +1085,9 @@ function newobject:GetTextCollisions(x, y)
 			end
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1103,7 +1104,7 @@ function newobject:PositionText()
 	local textoffsetx = self.textoffsetx
 	local textoffsety = self.textoffsety
 	local linenumberspanel = self.linenumberspanel
-	
+
 	if multiline then
 		if linenumberspanel then
 			local panel = self:GetLineNumbersPanel()
@@ -1117,9 +1118,9 @@ function newobject:PositionText()
 		self.textx = (x - offsetx) + textoffsetx
 		self.texty = (y - offsety) + textoffsety
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1130,7 +1131,7 @@ function newobject:SetTextOffsetX(num)
 
 	self.textoffsetx = num
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1141,7 +1142,7 @@ function newobject:SetTextOffsetY(num)
 
 	self.textoffsety = num
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1152,7 +1153,7 @@ function newobject:SetFont(font)
 
 	self.font = font
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1162,7 +1163,7 @@ end
 function newobject:GetFont()
 
 	return self.font
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1174,9 +1175,9 @@ function newobject:SetFocus(focus)
 	local inputobject = loveframes.inputobject
 	local onfocusgained = self.OnFocusGained
 	local onfocuslost = self.OnFocusLost
-	
+
 	self.focus = focus
-	
+
 	if focus then
 		loveframes.inputobject = self
 		if onfocusgained then
@@ -1190,9 +1191,9 @@ function newobject:SetFocus(focus)
 			onfocuslost(self)
 		end
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1202,7 +1203,7 @@ end
 function newobject:GetFocus()
 
 	return self.focus
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1212,7 +1213,7 @@ end
 function newobject:GetIndicatorVisibility()
 
 	return self.showindicator
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1223,53 +1224,53 @@ function newobject:SetLimit(limit)
 
 	self.limit = limit
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: SetUsable(usable)
-	- desc: sets what characters can be used for the 
+	- desc: sets what characters can be used for the
 			object's text
 --]]---------------------------------------------------------
 function newobject:SetUsable(usable)
 
 	self.usable = usable
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: GetUsable()
-	- desc: gets what characters can be used for the 
+	- desc: gets what characters can be used for the
 			object's text
 --]]---------------------------------------------------------
 function newobject:GetUsable()
 
 	return self.usable
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: SetUnusable(unusable)
-	- desc: sets what characters can not be used for the 
+	- desc: sets what characters can not be used for the
 			object's text
 --]]---------------------------------------------------------
 function newobject:SetUnusable(unusable)
 
 	self.unusable = unusable
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: GetUnusable()
-	- desc: gets what characters can not be used for the 
+	- desc: gets what characters can not be used for the
 			object's text
 --]]---------------------------------------------------------
 function newobject:GetUnusable()
 
 	return self.unusable
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1283,9 +1284,9 @@ function newobject:Clear()
 	self.offsetx = 0
 	self.offsety = 0
 	self.indicatornum = 0
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1296,11 +1297,11 @@ function newobject:SetText(text)
 
 	local tabreplacement = self.tabreplacement
 	local multiline = self.multiline
-	
+
 	text = tostring(text)
 	text = text:gsub(string.char(9), tabreplacement)
 	text = text:gsub(string.char(13), "")
-	
+
 	if multiline then
 		text = text:gsub(string.char(92) .. string.char(110), string.char(10))
 		local t = loveframes.util.SplitString(text, string.char(10))
@@ -1318,9 +1319,9 @@ function newobject:SetText(text)
 		self.line = 1
 		self.indicatornum = #text
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1332,7 +1333,7 @@ function newobject:GetText()
 	local multiline = self.multiline
 	local lines = self.lines
 	local text = ""
-	
+
 	if multiline then
 		for k, v in ipairs(lines) do
 			text = text .. v
@@ -1343,9 +1344,9 @@ function newobject:GetText()
 	else
 		text = lines[1]
 	end
-	
+
 	return text
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1357,9 +1358,9 @@ function newobject:SetMultiline(bool)
 
 	local text = ""
 	local lines = self.lines
-	
+
 	self.multiline = bool
-	
+
 	if bool then
 		self:Clear()
 	else
@@ -1372,7 +1373,7 @@ function newobject:SetMultiline(bool)
 		self.hbar = false
 		self.linenumberspanel = false
 	end
-	
+
 	return self
 
 end
@@ -1385,7 +1386,7 @@ end
 function newobject:GetMultiLine()
 
 	return self.multiline
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1397,7 +1398,7 @@ function newobject:GetVerticalScrollBody()
 	local vbar = self.vbar
 	local internals = self.internals
 	local item = false
-	
+
 	if vbar then
 		for k, v in ipairs(internals) do
 			if v.type == "scrollbody" and v.bartype == "vertical" then
@@ -1405,7 +1406,7 @@ function newobject:GetVerticalScrollBody()
 			end
 		end
 	end
-	
+
 	return item
 
 end
@@ -1419,7 +1420,7 @@ function newobject:GetHorizontalScrollBody()
 	local hbar = self.hbar
 	local internals = self.internals
 	local item = false
-	
+
 	if hbar then
 		for k, v in ipairs(internals) do
 			if v.type == "scrollbody" and v.bartype == "horizontal" then
@@ -1427,7 +1428,7 @@ function newobject:GetHorizontalScrollBody()
 			end
 		end
 	end
-	
+
 	return item
 
 end
@@ -1440,7 +1441,7 @@ end
 function newobject:HasVerticalScrollBar()
 
 	return self.vbar
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1451,7 +1452,7 @@ end
 function newobject:HasHorizontalScrollBar()
 
 	return self.hbar
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1463,7 +1464,7 @@ function newobject:GetLineNumbersPanel()
 	local panel = self.linenumberspanel
 	local internals = self.internals
 	local item = false
-	
+
 	if panel then
 		for k, v in ipairs(internals) do
 			if v.type == "linenumberspanel" then
@@ -1471,9 +1472,9 @@ function newobject:GetLineNumbersPanel()
 			end
 		end
 	end
-	
+
 	return item
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1484,13 +1485,13 @@ end
 function newobject:ShowLineNumbers(bool)
 
 	local multiline = self.multiline
-	
+
 	if multiline then
 		self.linenumbers = bool
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1500,7 +1501,7 @@ end
 function newobject:GetTextX()
 
 	return self.textx
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1510,7 +1511,7 @@ end
 function newobject:GetTextY()
 
 	return self.texty
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1521,7 +1522,7 @@ end
 function newobject:IsAllTextSelected()
 
 	return self.alltextselected
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1531,7 +1532,7 @@ end
 function newobject:GetLines()
 
 	return self.lines
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1541,7 +1542,7 @@ end
 function newobject:GetOffsetX()
 
 	return self.offsetx
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1551,7 +1552,7 @@ end
 function newobject:GetOffsetY()
 
 	return self.offsety
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1561,7 +1562,7 @@ end
 function newobject:GetIndicatorX()
 
 	return self.indicatorx
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1571,7 +1572,7 @@ end
 function newobject:GetIndicatorY()
 
 	return self.indicatory
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1582,7 +1583,7 @@ end
 function newobject:GetLineNumbersEnabled()
 
 	return self.linenumbers
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1592,7 +1593,7 @@ end
 function newobject:GetItemWidth()
 
 	return self.itemwidth
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1602,7 +1603,7 @@ end
 function newobject:GetItemHeight()
 
 	return self.itemheight
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1613,7 +1614,7 @@ function newobject:SetTabReplacement(tabreplacement)
 
 	self.tabreplacement = tabreplacement
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1623,7 +1624,7 @@ end
 function newobject:GetTabReplacement()
 
 	return self.tabreplacement
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1635,7 +1636,7 @@ function newobject:SetEditable(bool)
 
 	self.editable = bool
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1646,7 +1647,7 @@ end
 function newobject:GetEditable()
 
 	return self.editable
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1658,7 +1659,7 @@ function newobject:SetButtonScrollAmount(amount)
 
 	self.buttonscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1669,7 +1670,7 @@ end
 function newobject:GetButtonScrollAmount()
 
 	return self.buttonscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1680,7 +1681,7 @@ function newobject:SetMouseWheelScrollAmount(amount)
 
 	self.mousewheelscrollamount = amount
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1690,7 +1691,7 @@ end
 function newobject:GetButtonScrollAmount()
 
 	return self.mousewheelscrollamount
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1699,17 +1700,17 @@ end
 			when in multiline mode
 --]]---------------------------------------------------------
 function newobject:SetAutoScroll(bool)
-	
+
 	local internals = self.internals
-	
+
 	self.autoscroll = bool
-	
+
 	if internals[2] then
 		internals[2].internals[1].internals[1].autoscroll = bool
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1720,7 +1721,7 @@ end
 function newobject:GetAutoScroll()
 
 	return self.autoscroll
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1731,7 +1732,7 @@ function newobject:SetRepeatDelay(delay)
 
 	self.repeatdelay = delay
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1741,7 +1742,7 @@ end
 function newobject:GetRepeatDelay()
 
 	return self.repeatdelay
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1752,7 +1753,7 @@ function newobject:SetRepeatRate(rate)
 
 	self.repeatrate = rate
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1762,7 +1763,7 @@ end
 function newobject:GetRepeatRate()
 
 	return self.repeatrate
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1773,7 +1774,7 @@ function newobject:SetValue(value)
 
 	self:SetText(value)
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1783,7 +1784,7 @@ end
 function newobject:GetValue()
 
 	return self:GetText()
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1793,13 +1794,13 @@ end
 function newobject:SetVisible(bool)
 
 	self.visible = bool
-	
+
 	if not bool then
 		self.keydown = "none"
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1810,18 +1811,18 @@ function newobject:Copy()
 
 	local text = self:GetText()
 	love.system.setClipboardText(text)
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
 	- func: Paste()
-	- desc: pastes the current contents of the clipboard 
+	- desc: pastes the current contents of the clipboard
 			into the object's text
 --]]---------------------------------------------------------
 function newobject:Paste()
-	
+
 	local text = love.system.getClipboardText()
 	local usable = self.usable
 	local unusable = self.unusable
@@ -1829,7 +1830,7 @@ function newobject:Paste()
 	local alltextselected = self.alltextselected
 	local onpaste = self.OnPaste
 	local ontextchanged = self.OnTextChanged
-	
+
 	if limit > 0 then
 		local curtext = self:GetText()
 		local curlength = curtext:len()
@@ -1929,9 +1930,9 @@ function newobject:Paste()
 	if onpaste then
 		onpaste(self, text)
 	end
-	
+
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1942,7 +1943,7 @@ function newobject:SelectAll()
 
 	self.alltextselected = true
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1953,7 +1954,7 @@ function newobject:DeselectAll()
 
 	self.alltextselected = false
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1964,7 +1965,7 @@ function newobject:SetMasked(masked)
 
 	self.masked = masked
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1974,7 +1975,7 @@ end
 function newobject:GetMasked()
 
 	return self.masked
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1985,7 +1986,7 @@ function newobject:SetMaskChar(char)
 
 	self.maskchar = char
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -1995,7 +1996,7 @@ end
 function newobject:GetMaskChar()
 
 	return self.maskchar
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -2006,7 +2007,7 @@ function newobject:SetPlaceholderText(text)
 
 	self.placeholder = text
 	return self
-	
+
 end
 
 --[[---------------------------------------------------------
@@ -2016,5 +2017,5 @@ end
 function newobject:GetPlaceholderText()
 
 	return self.placeholder
-	
+
 end
